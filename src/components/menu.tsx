@@ -5,17 +5,11 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 export default function Menu() {
   return (
-    <div className="flex justify-between px-8 py-4 border-top bg-secondary">
-      <FormatListBulletedRoundedIcon
-        fontSize="large"
-        className="text-gray-700"
-      />
-      <SearchRoundedIcon fontSize="large" className="text-gray-400" />
-      <NotificationsNoneRoundedIcon
-        fontSize="large"
-        className="text-gray-400"
-      />
-      <SettingsOutlinedIcon fontSize="large" className="text-gray-400" />
+    <div className="flex justify-between p-8 pt-4  border-top bg-secondary">
+      <FormatListBulletedRoundedIcon className="text-gray-700" />
+      <SearchRoundedIcon className="text-gray-400" />
+      <NotificationsNoneRoundedIcon className="text-gray-400" />
+      <SettingsOutlinedIcon className="text-gray-400" />
     </div>
   );
 }
