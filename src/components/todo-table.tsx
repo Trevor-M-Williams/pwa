@@ -3,6 +3,7 @@
 import * as React from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
+import { cn } from "@/lib/utils";
 
 import {
   ColumnDef,
@@ -16,7 +17,10 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+
 import { MoreHorizontal } from "lucide-react";
+import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
+import { iconClass } from "@/lib/styles";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -28,7 +32,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { TableHead } from "@mui/material";
 
 export type Todo = {
   status: boolean;
@@ -106,18 +109,25 @@ export function TodoTable() {
   });
 
   React.useEffect(() => {
-    getData();
+    getTodos();
 
-    async function getData() {
+    async function getTodos() {
       const querySnapshot = await getDocs(collection(db, "todos"));
       const data = querySnapshot.docs.map((doc) => doc.data() as Todo);
       setData(data);
     }
   }, []);
 
+  function openTodoModal() {
+    console.log("open modal");
+  }
+
   return (
     <div className="w-full">
-      <h1 className="text-xl text-black font-semibold">To Do</h1>
+      <div className="flex justify-between">
+        <h1 className="text-xl text-gray-700 font-semibold">To Do</h1>
+        <AddBoxOutlinedIcon className={cn(iconClass)} onClick={openTodoModal} />
+      </div>
       <div className="">
         <Table>
           <TableBody>
