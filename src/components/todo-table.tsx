@@ -75,7 +75,7 @@ export const columns: ColumnDef<Todo>[] = [
     id: "actions",
     enableHiding: false,
     cell: () => (
-      <div className="w-min p-0">
+      <div className="p-0 text-right">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="px-2">
