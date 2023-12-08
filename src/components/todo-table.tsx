@@ -13,37 +13,35 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { ArrowUpDown, ChevronDown, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 
 const data: Todo[] = [
   {
-    status: false,
+    status: true,
     text: "Simplify table",
   },
   {
     status: false,
     text: "Connect to database",
+  },
+  {
+    status: false,
+    text: "Add and delete functionality",
+  },
+  {
+    status: false,
+    text: "Multiple windows",
   },
   {
     status: false,
@@ -76,13 +74,11 @@ export const columns: ColumnDef<Todo>[] = [
   {
     id: "actions",
     enableHiding: false,
-    cell: ({ row }) => {
-      const todo = row.original;
-
-      return (
+    cell: () => (
+      <div className="w-min p-0">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
+            <Button variant="ghost" className="px-2">
               <span className="sr-only">Open menu</span>
               <MoreHorizontal className="h-4 w-4" />
             </Button>
@@ -93,8 +89,8 @@ export const columns: ColumnDef<Todo>[] = [
             <DropdownMenuItem>View details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      );
-    },
+      </div>
+    ),
   },
 ];
 
@@ -134,12 +130,9 @@ export function TodoTable() {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
+                <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="px-1 py-2">
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
