@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
-import { cn } from "@/lib/utils";
 
 import {
   ColumnDef,
@@ -19,8 +18,6 @@ import {
 } from "@tanstack/react-table";
 
 import { MoreHorizontal } from "lucide-react";
-import AddBoxOutlinedIcon from "@mui/icons-material/AddBoxOutlined";
-import { iconClass } from "@/lib/styles";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -32,6 +29,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { TodoModal } from "./todo-modal";
 
 export type Todo = {
   status: boolean;
@@ -109,53 +107,62 @@ export function TodoTable() {
   });
 
   React.useEffect(() => {
-    getTodos();
+    const unsubscribe = onSnapshot(collection(db, "todos"), (querySnapshot) => {
+      const todos = querySnapshot.docs.map((doc) => doc.data() as Todo);
+      setData(todos);
+    });
 
-    async function getTodos() {
-      const querySnapshot = await getDocs(collection(db, "todos"));
-      const data = querySnapshot.docs.map((doc) => doc.data() as Todo);
-      setData(data);
-    }
+    return () => unsubscribe();
   }, []);
 
-  function openTodoModal() {
-    console.log("open modal");
-  }
-
   return (
-    <div className="w-full">
+    <div className="relative h-full w-full">
       <div className="flex justify-between">
         <h1 className="text-xl text-gray-700 font-semibold">To Do</h1>
-        <AddBoxOutlinedIcon className={cn(iconClass)} onClick={openTodoModal} />
+        <TodoModal />
       </div>
-      <div className="">
-        <Table>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
+
+      <Table>
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
-          </TableBody>
-        </Table>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
+      <div className="absolute bottom-0 w-full flex items-center justify-end space-x-2 py-4">
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </div>
   );
