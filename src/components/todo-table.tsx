@@ -69,7 +69,7 @@ export const columns: ColumnDef<Todo>[] = [
   },
   {
     accessorKey: "text",
-    cell: ({ row }) => <div className="lowercase">{row.getValue("text")}</div>,
+    cell: ({ row }) => <div className="">{row.getValue("text")}</div>,
   },
   {
     id: "actions",
@@ -132,7 +132,7 @@ export function TodoTable() {
               table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id}>
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-1 py-2">
+                    <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
                         cell.getContext()
