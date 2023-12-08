@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="fixed inset-0 flex flex-col">
           <Navbar />
-          <div className="flex-grow">{children}</div>
+          <div className="flex-grow p-4">{children}</div>
           <Menu />
         </div>
       </body>
