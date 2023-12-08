@@ -1,6 +1,9 @@
 "use client";
 
 import * as React from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -25,29 +28,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-
-const data: Todo[] = [
-  {
-    status: true,
-    text: "Simplify table",
-  },
-  {
-    status: false,
-    text: "Connect to database",
-  },
-  {
-    status: false,
-    text: "Add and delete functionality",
-  },
-  {
-    status: false,
-    text: "Multiple windows",
-  },
-  {
-    status: false,
-    text: "Add ai completion",
-  },
-];
+import { TableHead } from "@mui/material";
 
 export type Todo = {
   status: boolean;
@@ -57,6 +38,7 @@ export type Todo = {
 export const columns: ColumnDef<Todo>[] = [
   {
     id: "select",
+    header: () => <div className="w-12"></div>,
     cell: ({ row }) => (
       <Checkbox
         defaultChecked={row.original.status}
@@ -95,6 +77,7 @@ export const columns: ColumnDef<Todo>[] = [
 ];
 
 export function TodoTable() {
+  const [data, setData] = React.useState<Todo[]>([]);
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -121,6 +104,16 @@ export function TodoTable() {
       rowSelection,
     },
   });
+
+  React.useEffect(() => {
+    getData();
+
+    async function getData() {
+      const querySnapshot = await getDocs(collection(db, "todos"));
+      const data = querySnapshot.docs.map((doc) => doc.data() as Todo);
+      setData(data);
+    }
+  }, []);
 
   return (
     <div className="w-full">
