@@ -12,7 +12,7 @@ type ActiveIcon = "list" | "search" | "notifications" | "settings";
 export default function Menu() {
   const [activeIcon, setActiveIcon] = useState<ActiveIcon>("list");
 
-  const iconClass = "h-8 w-8 text-gray-400";
+  const iconClass = "h-8 w-8 text-gray-400 transition-colors duration-250";
   const activeClass = "text-gray-800";
 
   return (
