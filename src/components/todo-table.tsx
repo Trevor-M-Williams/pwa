@@ -1,5 +1,7 @@
 "use client";
 import * as React from "react";
+import { TodoContext } from "@/lib/context";
+
 import { doc, collection, deleteDoc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
@@ -29,12 +31,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TodoModal } from "./todo-modal";
-
-export type Todo = {
-  id: string;
-  status: boolean;
-  text: string;
-};
 
 export const columns: ColumnDef<Todo>[] = [
   {
@@ -99,8 +95,7 @@ function TodoWrapper({ children }: { children: React.ReactNode }) {
 }
 
 export function TodoTable() {
-  const [todos, setTodos] = React.useState<Todo[]>([]);
-  const [loading, setLoading] = React.useState<boolean>(true);
+  const { todos, loading } = React.useContext(TodoContext);
 
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -128,20 +123,6 @@ export function TodoTable() {
       rowSelection,
     },
   });
-
-  React.useEffect(() => {
-    setLoading(true);
-    const unsubscribe = onSnapshot(collection(db, "todos"), (querySnapshot) => {
-      const todos = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Todo[];
-      setTodos(todos);
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   if (loading) {
     return (

@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
-import { collection, doc, setDoc } from "firebase/firestore";
+
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,8 @@ export function TodoModal() {
   const [todo, setTodo] = useState("");
 
   async function addTodo() {
+    setTodo("");
+
     const timestamp = Date.now();
     const todoId = timestamp.toString();
     const docRef = doc(db, "todos", todoId);
@@ -30,8 +33,6 @@ export function TodoModal() {
       status: false,
     };
     await setDoc(docRef, payload);
-
-    setTodo("");
   }
 
   return (
