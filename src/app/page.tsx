@@ -1,5 +1,5 @@
-import { TodoTable } from "@/components/todo-table";
+import { TodoList } from "@/components/todo-list";
 
 export default function Home() {
-  return <TodoTable />;
+  return <TodoList />;
 }

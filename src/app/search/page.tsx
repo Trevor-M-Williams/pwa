@@ -1,5 +1,3 @@
-import { DND } from "@/components/dnd";
-
-export default function Home() {
-  return <DND />;
+export default function Search() {
+  return <div>Search</div>;
 }
