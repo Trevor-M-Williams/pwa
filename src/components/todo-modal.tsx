@@ -7,6 +7,7 @@ import { db } from "@/lib/firebase";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
@@ -46,7 +47,9 @@ export function TodoModal() {
         </DialogHeader>
         <Textarea value={todo} onChange={(e) => setTodo(e.target.value)} />
         <DialogFooter>
-          <Button onClick={addTodo}>Submit</Button>
+          <DialogClose asChild>
+            <Button onClick={addTodo}>Submit</Button>
+          </DialogClose>
         </DialogFooter>
       </DialogContent>
     </Dialog>
