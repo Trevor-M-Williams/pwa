@@ -86,6 +86,18 @@ export const columns: ColumnDef<Todo>[] = [
   },
 ];
 
+function TodoWrapper({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="relative h-full w-full">
+      <div className="flex justify-between">
+        <h1 className="text-xl text-gray-700 font-semibold">To Do</h1>
+        <TodoModal />
+      </div>
+      {children}
+    </div>
+  );
+}
+
 export function TodoTable() {
   const [todos, setTodos] = React.useState<Todo[]>([]);
   const [loading, setLoading] = React.useState<boolean>(true);
@@ -131,62 +143,62 @@ export function TodoTable() {
     return () => unsubscribe();
   }, []);
 
-  return (
-    <div className="relative h-full w-full">
-      <div className="flex justify-between">
-        <h1 className="text-xl text-gray-700 font-semibold">To Do</h1>
-        <TodoModal />
-      </div>
-
-      {loading ? (
+  if (loading) {
+    return (
+      <TodoWrapper>
         <div className="flex justify-center items-center h-full">
           <p>Loading...</p>
         </div>
-      ) : todos.length > 0 ? (
-        <>
-          <Table>
-            <TableBody>
-              {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+      </TodoWrapper>
+    );
+  }
 
-          <div className="absolute bottom-0 w-full flex items-center justify-end space-x-2 py-4">
-            <div className="space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.previousPage()}
-                disabled={!table.getCanPreviousPage()}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
-                Next
-              </Button>
-            </div>
-          </div>
-        </>
-      ) : (
+  if (todos.length === 0) {
+    return (
+      <TodoWrapper>
         <div className="flex justify-center items-center h-full">
-          <p>No todos found</p>
+          <p>No todos found.</p>
         </div>
-      )}
-    </div>
+      </TodoWrapper>
+    );
+  }
+
+  return (
+    <TodoWrapper>
+      <Table>
+        <TableBody>
+          {table.getRowModel().rows.map((row) => (
+            <TableRow key={row.id}>
+              {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+
+      <div className="absolute bottom-0 w-full flex items-center justify-end space-x-2 py-4">
+        <div className="space-x-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            Previous
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            Next
+          </Button>
+        </div>
+      </div>
+    </TodoWrapper>
   );
 }
