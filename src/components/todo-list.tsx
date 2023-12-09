@@ -168,8 +168,10 @@ export function TodoList() {
                               <MoreHorizOutlinedIcon className="w-5 h-5" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                          <DropdownMenuContent
+                            align="end"
+                            className="flex flex-col gap-1.5"
+                          >
                             <DropdownMenuItem>Complete</DropdownMenuItem>
                             <DropdownMenuItem>View details</DropdownMenuItem>
                             <DropdownMenuItem
