@@ -1,5 +1,5 @@
-import React from "react";
+import { DND } from "@/components/dnd";
 
-export default function SearchPage() {
-  return <div>Search</div>;
+export default function Home() {
+  return <DND />;
 }
