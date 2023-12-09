@@ -41,7 +41,7 @@ export function TodoModal() {
       <DialogTrigger asChild>
         <AddBoxOutlinedIcon className={cn(iconClass)} />
       </DialogTrigger>
-      <DialogContent className="w-[95%] sm:max-w-[425px]">
+      <DialogContent className="top-1/4 w-[95%] sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-start">Add To Do</DialogTitle>
         </DialogHeader>
