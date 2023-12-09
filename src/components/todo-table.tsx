@@ -2,7 +2,7 @@
 import * as React from "react";
 import { TodoContext } from "@/lib/context";
 
-import { doc, collection, deleteDoc, onSnapshot } from "firebase/firestore";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
 import {
@@ -32,14 +32,20 @@ import {
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { TodoModal } from "./todo-modal";
 
+async function updateTodoStatus(id: string, newStatus: boolean) {
+  const todoRef = doc(db, "todos", id);
+  await updateDoc(todoRef, { status: newStatus });
+}
+
 export const columns: ColumnDef<Todo>[] = [
   {
     id: "select",
-    header: () => <div className="w-12"></div>,
     cell: ({ row }) => (
       <Checkbox
-        defaultChecked={row.original.status}
-        onCheckedChange={() => console.log("check")}
+        checked={row.original.status}
+        onCheckedChange={(newStatus) =>
+          updateTodoStatus(row.original.id, newStatus as boolean)
+        }
         aria-label="Select row"
       />
     ),
