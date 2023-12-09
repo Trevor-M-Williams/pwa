@@ -1,5 +1,6 @@
 "use client";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { TodoContext } from "@/lib/context";
 
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebase";
@@ -21,17 +22,19 @@ import { iconClass } from "@/lib/styles";
 import { cn } from "@/lib/utils";
 
 export function TodoModal() {
+  const { todos } = useContext(TodoContext);
   const [todo, setTodo] = useState("");
 
   async function addTodo() {
     setTodo("");
 
-    const timestamp = Date.now();
-    const todoId = timestamp.toString();
+    const todoId = Date.now().toString();
+    const orderIndex = todos.length;
     const docRef = doc(db, "todos", todoId);
     const payload = {
       text: todo,
       status: false,
+      orderIndex,
     };
     await setDoc(docRef, payload);
   }
