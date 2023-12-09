@@ -87,7 +87,9 @@ export const columns: ColumnDef<Todo>[] = [
 ];
 
 export function TodoTable() {
-  const [data, setData] = React.useState<Todo[]>([]);
+  const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [loading, setLoading] = React.useState<boolean>(true);
+
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -97,7 +99,7 @@ export function TodoTable() {
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
+    data: todos,
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -116,14 +118,14 @@ export function TodoTable() {
   });
 
   React.useEffect(() => {
+    setLoading(true);
     const unsubscribe = onSnapshot(collection(db, "todos"), (querySnapshot) => {
-      const todos = querySnapshot.docs.map((doc) => {
-        return {
-          id: doc.id,
-          ...doc.data(),
-        } as Todo;
-      });
-      setData(todos);
+      const todos = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Todo[];
+      setTodos(todos);
+      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -136,51 +138,55 @@ export function TodoTable() {
         <TodoModal />
       </div>
 
-      <Table>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-[50vh] text-center"
-              >
-                Add a to do to get started
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-
-      <div className="absolute bottom-0 w-full flex items-center justify-end space-x-2 py-4">
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            Previous
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            Next
-          </Button>
+      {loading ? (
+        <div className="flex justify-center items-center h-full">
+          <p>Loading...</p>
         </div>
-      </div>
+      ) : todos.length > 0 ? (
+        <>
+          <Table>
+            <TableBody>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow key={row.id}>
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div className="absolute bottom-0 w-full flex items-center justify-end space-x-2 py-4">
+            <div className="space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.previousPage()}
+                disabled={!table.getCanPreviousPage()}
+              >
+                Previous
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
+                Next
+              </Button>
+            </div>
+          </div>
+        </>
+      ) : (
+        <div className="flex justify-center items-center h-full">
+          <p>No todos found</p>
+        </div>
+      )}
     </div>
   );
 }
