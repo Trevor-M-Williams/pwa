@@ -56,8 +56,15 @@ function TodoWrapper({ children }: { children: React.ReactNode }) {
 
 export function TodoList() {
   const { todos, setTodos, loading } = useContext(TodoContext);
+  const [draggingItemId, setDraggingItemId] = useState(null);
 
-  const handleDragEnd = (result: any) => {
+  function handleDragStart(start: any) {
+    setDraggingItemId(start.draggableId);
+  }
+
+  function handleDragEnd(result: any) {
+    setDraggingItemId(null);
+
     if (!result.destination) {
       return;
     }
@@ -70,7 +77,7 @@ export function TodoList() {
 
     setTodos(reorderedTodos);
     //update the order in Firestore
-  };
+  }
 
   if (loading) {
     return (
@@ -94,7 +101,7 @@ export function TodoList() {
 
   return (
     <TodoWrapper>
-      <DragDropContext onDragEnd={handleDragEnd}>
+      <DragDropContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
         <Droppable droppableId="droppable">
           {(provided) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
@@ -105,7 +112,9 @@ export function TodoList() {
                       ref={provided.innerRef}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
-                      className="flex items-center justify-between gap-2 px-0 py-2 border-b last:border-b-0"
+                      className={`flex items-center justify-between gap-2 pl-1 py-2 rounded-sm border-secondary border-b last:border-b-0 ${
+                        draggingItemId === todo.id ? "bg-secondary" : ""
+                      }`}
                     >
                       <Checkbox
                         checked={todo.status}
