@@ -74,13 +74,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-a:focus,
-a:active,
-a:hover {
-  background: transparent;
-}
-
-a {
-  background: transparent !important;
-}

@@ -1,4 +1,4 @@
 export const iconClass =
-  "text-gray-400 transition-colors duration-250 hover:bg-transparent active:bg-transparent";
+  "flex items-center justify-center rounded-sm text-gray-400 bg-secondary hover:bg-secondary active:bg-secondary-dark focus:bg-secondary";
 export const largeIconClass = "h-8 w-8";
 export const activeIconClass = "text-gray-800";
