@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 import FormatListBulletedRoundedIcon from "@mui/icons-material/FormatListBulletedRounded";
@@ -11,6 +11,7 @@ import { iconClass, largeIconClass, activeIconClass } from "@/lib/styles";
 import Link from "next/link";
 
 export default function Menu() {
+  const router = useRouter();
   const pathname = usePathname();
   const icons = [
     { Icon: FormatListBulletedRoundedIcon, href: "/" },
@@ -19,20 +20,24 @@ export default function Menu() {
     { Icon: SettingsOutlinedIcon, href: "/settings" },
   ];
 
+  function navigate(href: string) {
+    router.push(href);
+  }
+
   return (
     <div className="flex justify-between p-10 pt-4 border-top bg-secondary">
       {icons.map(({ Icon, href }, i) => (
-        <Link
-          href={href}
+        <div
           key={i}
           className={cn(
             iconClass,
             largeIconClass,
             pathname === href && activeIconClass
           )}
+          onClick={() => navigate(href)}
         >
           <Icon />
-        </Link>
+        </div>
       ))}
     </div>
   );
